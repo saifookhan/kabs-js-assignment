@@ -116,7 +116,7 @@ const EnhancedTableToolbar = (props) => {
                     >
                       {statuses.map((status) => {
                         return (
-                          <MenuItem onClick={handleClose}>
+                          <MenuItem key={status.type} onClick={handleClose}>
                             {status.type}
                           </MenuItem>
                         );

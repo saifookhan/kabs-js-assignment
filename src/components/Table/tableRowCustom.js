@@ -1,20 +1,12 @@
 import React, { useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import Table from "@material-ui/core/Table";
-import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
-import TableContainer from "@material-ui/core/TableContainer";
-import TablePagination from "@material-ui/core/TablePagination";
 import TableRow from "@material-ui/core/TableRow";
-import Paper from "@material-ui/core/Paper";
-import Checkbox from "@material-ui/core/Checkbox";
 import Select from "@material-ui/core/Select";
 import FormControl from "@material-ui/core/FormControl";
-import InputLabel from "@material-ui/core/InputLabel";
 import MenuItem from "@material-ui/core/MenuItem";
-
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import Switch from "@material-ui/core/Switch";
+import IconButton from "@material-ui/core/IconButton";
+import DeleteIcon from "@material-ui/icons/Delete";
 
 import { possibleStates } from "./constants";
 
@@ -26,7 +18,7 @@ function TableRowCustom(props) {
 
   useEffect(() => {
     setuserValue(props.row.user);
-  }, []);
+  }, [props.row.user]);
 
   const { row, index } = props;
   return (
@@ -82,7 +74,12 @@ function TableRowCustom(props) {
         </FormControl>
       </TableCell>
       <TableCell padding="checkbox">
-        <Checkbox />
+        <IconButton
+          aria-label="delete"
+          onClick={(e) => props.deleteTask(index)}
+        >
+          <DeleteIcon />
+        </IconButton>{" "}
       </TableCell>
     </TableRow>
   );

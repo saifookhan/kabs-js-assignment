@@ -138,6 +138,9 @@ export default function TableMain() {
     oldArr[key].status = event.target.value;
     setTasks(oldArr);
   }
+  function handleDeleteTask(key) {
+    console.log(key);
+  }
 
   const emptyRows =
     rowsPerPage - Math.min(rowsPerPage, tasks.length - page * rowsPerPage);
@@ -183,6 +186,7 @@ export default function TableMain() {
                       index={index}
                       changeUser={handleChangeUser}
                       changeStatus={handleChangeTaskStatus}
+                      deleteTask={handleDeleteTask}
                     ></TableRowCustom>
                   );
                 })}
