@@ -8,12 +8,44 @@ import IconButton from "@material-ui/core/IconButton";
 import Tooltip from "@material-ui/core/Tooltip";
 import DeleteIcon from "@material-ui/icons/Delete";
 import FilterListIcon from "@material-ui/icons/FilterList";
+import Menu from "@material-ui/core/Menu";
+
+import Button from "@material-ui/core/Button";
+import ClickAwayListener from "@material-ui/core/ClickAwayListener";
+import Grow from "@material-ui/core/Grow";
+import Paper from "@material-ui/core/Paper";
+import Popper from "@material-ui/core/Popper";
+import MenuItem from "@material-ui/core/MenuItem";
+import MenuList from "@material-ui/core/MenuList";
 
 import { AddNew } from "./addNew";
+import { statuses } from "./constants";
 
 const EnhancedTableToolbar = (props) => {
   const classes = useToolbarStyles();
   const { numSelected } = props;
+
+  const [open, setOpen] = React.useState(false);
+  const anchorRef = React.useRef(null);
+
+  const handleToggle = () => {
+    setOpen((prevOpen) => !prevOpen);
+  };
+
+  const handleClose = (event) => {
+    if (anchorRef.current && anchorRef.current.contains(event.target)) {
+      return;
+    }
+
+    setOpen(false);
+  };
+
+  function handleListKeyDown(event) {
+    if (event.key === "Tab") {
+      event.preventDefault();
+      setOpen(false);
+    }
+  }
 
   return (
     <Toolbar
@@ -28,7 +60,7 @@ const EnhancedTableToolbar = (props) => {
           variant="subtitle1"
           component="div"
         >
-          {numSelected} diltered
+          {numSelected} filtered
         </Typography>
       ) : (
         <Typography
@@ -52,16 +84,56 @@ const EnhancedTableToolbar = (props) => {
           <Tooltip title="Filter list">
             <IconButton
               aria-label="filter list"
+              ref={anchorRef}
               onClick={(e) => {
                 console.log("filterPosted");
+                handleToggle();
               }}
             >
               <FilterListIcon />
             </IconButton>
           </Tooltip>
+          <Popper
+            open={open}
+            anchorEl={anchorRef.current}
+            role={undefined}
+            transition
+            disablePortal
+          >
+            {({ TransitionProps, placement }) => (
+              <Grow
+                {...TransitionProps}
+                style={{
+                  transformOrigin: "center top",
+                  // placement === "bottom" ? "center top" : "center bottom",
+                }}
+              >
+                <Paper>
+                  <ClickAwayListener onClickAway={handleClose}>
+                    <MenuList
+                      autoFocusItem={open}
+                      onKeyDown={handleListKeyDown}
+                    >
+                      {statuses.map((status) => {
+                        return (
+                          <MenuItem onClick={handleClose}>
+                            {status.type}
+                          </MenuItem>
+                        );
+                      })}
+                    </MenuList>
+                  </ClickAwayListener>
+                </Paper>
+              </Grow>
+            )}
+          </Popper>
         </span>
       )}
-      <AddNew users={props.users} addNew={props.addNew}></AddNew>
+      <AddNew
+        users={props.users}
+        addNew={props.addNew}
+        handleFilter={props.handleFilter}
+      ></AddNew>
     </Toolbar>
   );
 };

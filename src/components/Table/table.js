@@ -14,6 +14,7 @@ import Switch from "@material-ui/core/Switch";
 
 import { EnhancedTableToolbar } from "./toolbar";
 import { EnhancedTableHead } from "./head";
+import { TableRowCustom } from "./tableRowCustom";
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -71,7 +72,7 @@ export default function TableMain() {
         label: "Label A",
         description: "A lot of long description",
         status: "To Do",
-        user: "Saif",
+        user: "Saif Imran",
       },
     ]);
     setUsers([
@@ -116,6 +117,26 @@ export default function TableMain() {
 
   const isSelected = (name) => selected.indexOf(name) !== -1;
 
+  const handleFilter = (status) => {
+    console.log(status);
+  };
+
+  const deleteTask = (status) => {
+    console.log(status);
+  };
+
+  useEffect(() => {}, []);
+
+  function handleChangeUser(key, event) {
+    console.log(key, event.target.value);
+    let tempObj = {};
+    let oldArr = tasks;
+    oldArr[key].user = event.target.value;
+    setTasks(oldArr);
+    console.log(oldArr);
+    console.log(tasks);
+  }
+
   const emptyRows =
     rowsPerPage - Math.min(rowsPerPage, tasks.length - page * rowsPerPage);
 
@@ -126,6 +147,8 @@ export default function TableMain() {
           numSelected={selected.length}
           users={users}
           addNew={handleAddNewTask}
+          handleFilter={handleFilter}
+          deleteTask={deleteTask}
         />
         <TableContainer>
           <Table
@@ -151,30 +174,13 @@ export default function TableMain() {
                   const labelId = `enhanced-table-checkbox-${index}`;
 
                   return (
-                    <TableRow
-                      hover
-                      tabIndex={-1}
+                    <TableRowCustom
+                      users={users}
                       key={index}
-                      selected={isItemSelected}
-                    >
-                      <TableCell padding="checkbox">
-                        <Checkbox
-                          checked={isItemSelected}
-                          inputProps={{ "aria-labelledby": labelId }}
-                        />
-                      </TableCell>
-                      <TableCell
-                        component="th"
-                        id={labelId}
-                        scope="row"
-                        padding="none"
-                      >
-                        {row.label}
-                      </TableCell>
-                      <TableCell align="left">{row.description}</TableCell>
-                      <TableCell align="center">{row.status}</TableCell>
-                      <TableCell align="center">{row.user}</TableCell>
-                    </TableRow>
+                      row={row}
+                      index={index}
+                      changeUser={handleChangeUser}
+                    ></TableRowCustom>
                   );
                 })}
               {emptyRows > 0 && (
