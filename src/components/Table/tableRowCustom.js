@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
@@ -15,11 +15,14 @@ import MenuItem from "@material-ui/core/MenuItem";
 
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Switch from "@material-ui/core/Switch";
+
+import { possibleStates } from "./constants";
+
 function TableRowCustom(props) {
   const classes = useStyles();
 
-  const [openUser, setOpenUser] = React.useState(false);
   const [userValue, setuserValue] = React.useState(props.row.user);
+  const [statusValue, setStatusValue] = React.useState(props.row.status);
 
   useEffect(() => {
     setuserValue(props.row.user);
@@ -32,7 +35,28 @@ function TableRowCustom(props) {
         {row.label}
       </TableCell>
       <TableCell align="left">{row.description}</TableCell>
-      <TableCell align="center">{row.status}</TableCell>
+      <TableCell align="center">
+        <FormControl className={classes.formControl}>
+          <Select
+            value={statusValue}
+            onChange={(e) => {
+              props.changeStatus(index, e);
+              setStatusValue(e.target.value);
+            }}
+            className={classes.selectEmpty}
+            inputProps={{ "aria-label": "Without label" }}
+          >
+            <MenuItem value={row.status}>{row.status}</MenuItem>
+            {possibleStates[statusValue].map((user) => {
+              return (
+                <MenuItem key={user} value={user}>
+                  {user}
+                </MenuItem>
+              );
+            })}
+          </Select>
+        </FormControl>
+      </TableCell>
       <TableCell align="center">
         <FormControl className={classes.formControl}>
           <Select

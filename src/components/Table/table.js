@@ -128,13 +128,15 @@ export default function TableMain() {
   useEffect(() => {}, []);
 
   function handleChangeUser(key, event) {
-    console.log(key, event.target.value);
-    let tempObj = {};
     let oldArr = tasks;
     oldArr[key].user = event.target.value;
     setTasks(oldArr);
-    console.log(oldArr);
-    console.log(tasks);
+  }
+
+  function handleChangeTaskStatus(key, event) {
+    let oldArr = tasks;
+    oldArr[key].status = event.target.value;
+    setTasks(oldArr);
   }
 
   const emptyRows =
@@ -180,6 +182,7 @@ export default function TableMain() {
                       row={row}
                       index={index}
                       changeUser={handleChangeUser}
+                      changeStatus={handleChangeTaskStatus}
                     ></TableRowCustom>
                   );
                 })}
