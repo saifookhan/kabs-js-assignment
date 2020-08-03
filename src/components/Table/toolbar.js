@@ -35,7 +35,7 @@ const EnhancedTableToolbar = (props) => {
           id="tableTitle"
           component="div"
         >
-          Nutrition
+          Tasks
         </Typography>
       )}
 
@@ -47,7 +47,12 @@ const EnhancedTableToolbar = (props) => {
         </Tooltip>
       ) : (
         <Tooltip title="Filter list">
-          <IconButton aria-label="filter list">
+          <IconButton
+            aria-label="filter list"
+            onClick={(e) => {
+              console.log("filterPosted");
+            }}
+          >
             <FilterListIcon />
           </IconButton>
         </Tooltip>

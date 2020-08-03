@@ -9,15 +9,19 @@ import Checkbox from "@material-ui/core/Checkbox";
 
 const headCells = [
   {
-    id: "name",
-    numeric: false,
-    disablePadding: true,
-    label: "Dessert (100g serving)",
+    id: "label",
+    disablePadding: false,
+    label: "Label",
+    align: "left",
   },
-  { id: "calories", numeric: true, disablePadding: false, label: "Calories" },
-  { id: "fat", numeric: true, disablePadding: false, label: "Fat (g)" },
-  { id: "carbs", numeric: true, disablePadding: false, label: "Carbs (g)" },
-  { id: "protein", numeric: true, disablePadding: false, label: "Protein (g)" },
+  {
+    id: "desc",
+    disablePadding: false,
+    label: "Description",
+    align: "left",
+  },
+  { id: "fat", disablePadding: true, label: "Status", align: "center" },
+  { id: "carbs", disablePadding: false, label: "Assigned To", align: "center" },
 ];
 
 function EnhancedTableHead(props) {
@@ -48,7 +52,7 @@ function EnhancedTableHead(props) {
         {headCells.map((headCell) => (
           <TableCell
             key={headCell.id}
-            align={headCell.numeric ? "right" : "left"}
+            align={headCell.align}
             padding={headCell.disablePadding ? "none" : "default"}
             sortDirection={orderBy === headCell.id ? order : false}
           >
