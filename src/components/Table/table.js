@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
@@ -14,14 +14,6 @@ import Switch from "@material-ui/core/Switch";
 
 import { EnhancedTableToolbar } from "./toolbar";
 import { EnhancedTableHead } from "./head";
-
-function createData(name, calories, fat, carbs, protein) {
-  return { name, calories, fat, carbs, protein };
-}
-
-const rows = [
-  createData("Label A", "A lot of long description", "To Do", "Saif"),
-];
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -60,17 +52,6 @@ const useStyles = makeStyles((theme) => ({
   table: {
     minWidth: 750,
   },
-  visuallyHidden: {
-    border: 0,
-    clip: "rect(0 0 0 0)",
-    height: 1,
-    margin: -1,
-    overflow: "hidden",
-    padding: 0,
-    position: "absolute",
-    top: 20,
-    width: 1,
-  },
 }));
 export default function TableMain() {
   const classes = useStyles();
@@ -81,6 +62,20 @@ export default function TableMain() {
   const [dense, setDense] = React.useState(false);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
 
+  const [tasks, setTasks] = React.useState([]);
+  const [users, setUsers] = React.useState([]);
+
+  useEffect(() => {
+    setTasks([
+      {
+        label: "Label A",
+        description: "A lot of long description",
+        status: "To Do",
+        user: "Saif",
+      },
+    ]);
+  }, []);
+
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === "asc";
     setOrder(isAsc ? "desc" : "asc");
@@ -89,31 +84,11 @@ export default function TableMain() {
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelecteds = rows.map((n) => n.name);
+      const newSelecteds = tasks.map((n) => n.name);
       setSelected(newSelecteds);
       return;
     }
     setSelected([]);
-  };
-
-  const handleClick = (event, name) => {
-    const selectedIndex = selected.indexOf(name);
-    let newSelected = [];
-
-    if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, name);
-    } else if (selectedIndex === 0) {
-      newSelected = newSelected.concat(selected.slice(1));
-    } else if (selectedIndex === selected.length - 1) {
-      newSelected = newSelected.concat(selected.slice(0, -1));
-    } else if (selectedIndex > 0) {
-      newSelected = newSelected.concat(
-        selected.slice(0, selectedIndex),
-        selected.slice(selectedIndex + 1)
-      );
-    }
-
-    setSelected(newSelected);
   };
 
   const handleChangePage = (event, newPage) => {
@@ -132,7 +107,7 @@ export default function TableMain() {
   const isSelected = (name) => selected.indexOf(name) !== -1;
 
   const emptyRows =
-    rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
+    rowsPerPage - Math.min(rowsPerPage, tasks.length - page * rowsPerPage);
 
   return (
     <div className={classes.root}>
@@ -152,10 +127,10 @@ export default function TableMain() {
               orderBy={orderBy}
               onSelectAllClick={handleSelectAllClick}
               onRequestSort={handleRequestSort}
-              rowCount={rows.length}
+              rowCount={tasks.length}
             />
             <TableBody>
-              {stableSort(rows, getComparator(order, orderBy))
+              {stableSort(tasks, getComparator(order, orderBy))
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row, index) => {
                   const isItemSelected = isSelected(row.name);
@@ -164,11 +139,8 @@ export default function TableMain() {
                   return (
                     <TableRow
                       hover
-                      onClick={(event) => handleClick(event, row.name)}
-                      role="checkbox"
-                      aria-checked={isItemSelected}
                       tabIndex={-1}
-                      key={row.name}
+                      key={index}
                       selected={isItemSelected}
                     >
                       <TableCell padding="checkbox">
@@ -183,11 +155,11 @@ export default function TableMain() {
                         scope="row"
                         padding="none"
                       >
-                        {row.name}
+                        {row.label}
                       </TableCell>
-                      <TableCell align="left">{row.calories}</TableCell>
-                      <TableCell align="center">{row.fat}</TableCell>
-                      <TableCell align="center">{row.carbs}</TableCell>
+                      <TableCell align="left">{row.description}</TableCell>
+                      <TableCell align="center">{row.status}</TableCell>
+                      <TableCell align="center">{row.user}</TableCell>
                     </TableRow>
                   );
                 })}
@@ -202,7 +174,7 @@ export default function TableMain() {
         <TablePagination
           rowsPerPageOptions={[5, 10, 25]}
           component="div"
-          count={rows.length}
+          count={tasks.length}
           rowsPerPage={rowsPerPage}
           page={page}
           onChangePage={handleChangePage}
