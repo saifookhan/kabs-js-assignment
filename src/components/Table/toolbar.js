@@ -9,6 +9,8 @@ import Tooltip from "@material-ui/core/Tooltip";
 import DeleteIcon from "@material-ui/icons/Delete";
 import FilterListIcon from "@material-ui/icons/FilterList";
 
+import { AddNew } from "./addNew";
+
 const EnhancedTableToolbar = (props) => {
   const classes = useToolbarStyles();
   const { numSelected } = props;
@@ -26,7 +28,7 @@ const EnhancedTableToolbar = (props) => {
           variant="subtitle1"
           component="div"
         >
-          {numSelected} selected
+          {numSelected} diltered
         </Typography>
       ) : (
         <Typography
@@ -46,17 +48,20 @@ const EnhancedTableToolbar = (props) => {
           </IconButton>
         </Tooltip>
       ) : (
-        <Tooltip title="Filter list">
-          <IconButton
-            aria-label="filter list"
-            onClick={(e) => {
-              console.log("filterPosted");
-            }}
-          >
-            <FilterListIcon />
-          </IconButton>
-        </Tooltip>
+        <span>
+          <Tooltip title="Filter list">
+            <IconButton
+              aria-label="filter list"
+              onClick={(e) => {
+                console.log("filterPosted");
+              }}
+            >
+              <FilterListIcon />
+            </IconButton>
+          </Tooltip>
+        </span>
       )}
+      <AddNew users={props.users} addNew={props.addNew}></AddNew>
     </Toolbar>
   );
 };

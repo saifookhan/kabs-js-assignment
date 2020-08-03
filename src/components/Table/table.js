@@ -74,7 +74,17 @@ export default function TableMain() {
         user: "Saif",
       },
     ]);
+    setUsers([
+      { name: "Saif Imran" },
+      { name: "Jon Doe" },
+      { name: "Jane Doe" },
+    ]);
   }, []);
+
+  const handleAddNewTask = (task) => {
+    console.log(task);
+    setTasks((oldArray) => [...oldArray, task]);
+  };
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === "asc";
@@ -112,7 +122,11 @@ export default function TableMain() {
   return (
     <div className={classes.root}>
       <Paper className={classes.paper}>
-        <EnhancedTableToolbar numSelected={selected.length} />
+        <EnhancedTableToolbar
+          numSelected={selected.length}
+          users={users}
+          addNew={handleAddNewTask}
+        />
         <TableContainer>
           <Table
             className={classes.table}
