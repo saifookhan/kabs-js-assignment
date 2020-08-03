@@ -23,7 +23,7 @@ import { statuses } from "./constants";
 
 const EnhancedTableToolbar = (props) => {
   const classes = useToolbarStyles();
-  const { numSelected } = props;
+  const { filteredTasks } = props;
 
   const [open, setOpen] = React.useState(false);
   const anchorRef = React.useRef(null);
@@ -36,31 +36,23 @@ const EnhancedTableToolbar = (props) => {
     if (anchorRef.current && anchorRef.current.contains(event.target)) {
       return;
     }
-
     setOpen(false);
   };
-
-  function handleListKeyDown(event) {
-    if (event.key === "Tab") {
-      event.preventDefault();
-      setOpen(false);
-    }
-  }
 
   return (
     <Toolbar
       className={clsx(classes.root, {
-        [classes.highlight]: numSelected > 0,
+        [classes.highlight]: filteredTasks > 0,
       })}
     >
-      {numSelected > 0 ? (
+      {filteredTasks > 0 ? (
         <Typography
           className={classes.title}
           color="inherit"
           variant="subtitle1"
           component="div"
         >
-          {numSelected} filtered
+          {filteredTasks} filtered
         </Typography>
       ) : (
         <Typography
@@ -73,9 +65,14 @@ const EnhancedTableToolbar = (props) => {
         </Typography>
       )}
 
-      {numSelected > 0 ? (
+      {filteredTasks > 0 ? (
         <Tooltip title="Delete">
-          <IconButton aria-label="delete">
+          <IconButton
+            aria-label="delete"
+            onClick={(e) => {
+              props.handleFilter("");
+            }}
+          >
             <DeleteIcon />
           </IconButton>
         </Tooltip>
@@ -86,7 +83,6 @@ const EnhancedTableToolbar = (props) => {
               aria-label="filter list"
               ref={anchorRef}
               onClick={(e) => {
-                console.log("filterPosted");
                 handleToggle();
               }}
             >
@@ -110,13 +106,17 @@ const EnhancedTableToolbar = (props) => {
               >
                 <Paper>
                   <ClickAwayListener onClickAway={handleClose}>
-                    <MenuList
-                      autoFocusItem={open}
-                      onKeyDown={handleListKeyDown}
-                    >
+                    <MenuList autoFocusItem={open}>
                       {statuses.map((status) => {
                         return (
-                          <MenuItem key={status.type} onClick={handleClose}>
+                          <MenuItem
+                            key={status.type}
+                            value={status.type}
+                            onClick={(e) => {
+                              handleClose(e);
+                              props.handleFilter(status.type);
+                            }}
+                          >
                             {status.type}
                           </MenuItem>
                         );
@@ -139,7 +139,7 @@ const EnhancedTableToolbar = (props) => {
 };
 
 EnhancedTableToolbar.propTypes = {
-  numSelected: PropTypes.number.isRequired,
+  filteredTasks: PropTypes.number.isRequired,
 };
 
 const useToolbarStyles = makeStyles((theme) => ({

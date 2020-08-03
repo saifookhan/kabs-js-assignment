@@ -64,6 +64,7 @@ export default function TableMain() {
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
 
   const [tasks, setTasks] = React.useState([]);
+  const [filteredTasks, setFilteredTasks] = React.useState("");
   const [users, setUsers] = React.useState([]);
 
   useEffect(() => {
@@ -118,11 +119,17 @@ export default function TableMain() {
   const isSelected = (name) => selected.indexOf(name) !== -1;
 
   const handleFilter = (status) => {
-    console.log(status);
-  };
-
-  const deleteTask = (status) => {
-    console.log(status);
+    if (status !== "") {
+      var newList = tasks.filter((task) => {
+        return task.status === status;
+      });
+      console.log("asd" + status, newList);
+      setFilteredTasks(newList);
+    } else {
+      //remove filter
+      setFilteredTasks("");
+      console.log();
+    }
   };
 
   useEffect(() => {}, []);
@@ -149,11 +156,10 @@ export default function TableMain() {
     <div className={classes.root}>
       <Paper className={classes.paper}>
         <EnhancedTableToolbar
-          numSelected={selected.length}
+          filteredTasks={filteredTasks.length}
           users={users}
           addNew={handleAddNewTask}
           handleFilter={handleFilter}
-          deleteTask={deleteTask}
         />
         <TableContainer>
           <Table
@@ -172,7 +178,7 @@ export default function TableMain() {
               rowCount={tasks.length}
             />
             <TableBody>
-              {stableSort(tasks, getComparator(order, orderBy))
+              {stableSort(filteredTasks || tasks, getComparator(order, orderBy))
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row, index) => {
                   const isItemSelected = isSelected(row.name);
