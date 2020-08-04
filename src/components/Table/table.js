@@ -7,7 +7,6 @@ import TableContainer from "@material-ui/core/TableContainer";
 import TablePagination from "@material-ui/core/TablePagination";
 import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
-import Checkbox from "@material-ui/core/Checkbox";
 
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Switch from "@material-ui/core/Switch";
@@ -15,32 +14,6 @@ import Switch from "@material-ui/core/Switch";
 import { EnhancedTableToolbar } from "./toolbar";
 import { EnhancedTableHead } from "./head";
 import { TableRowCustom } from "./tableRowCustom";
-
-function descendingComparator(a, b, orderBy) {
-  if (b[orderBy] < a[orderBy]) {
-    return -1;
-  }
-  if (b[orderBy] > a[orderBy]) {
-    return 1;
-  }
-  return 0;
-}
-
-function getComparator(order, orderBy) {
-  return order === "desc"
-    ? (a, b) => descendingComparator(a, b, orderBy)
-    : (a, b) => -descendingComparator(a, b, orderBy);
-}
-
-function stableSort(array, comparator) {
-  const stabilizedThis = array.map((el, index) => [el, index]);
-  stabilizedThis.sort((a, b) => {
-    const order = comparator(a[0], b[0]);
-    if (order !== 0) return order;
-    return a[1] - b[1];
-  });
-  return stabilizedThis.map((el) => el[0]);
-}
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -56,51 +29,26 @@ const useStyles = makeStyles((theme) => ({
 }));
 export default function TableMain() {
   const classes = useStyles();
-  const [order, setOrder] = React.useState("asc");
-  const [orderBy, setOrderBy] = React.useState("calories");
-  const [selected, setSelected] = React.useState([]);
   const [page, setPage] = React.useState(0);
   const [dense, setDense] = React.useState(false);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
 
   const [tasks, setTasks] = React.useState([]);
   const [filteredTasks, setFilteredTasks] = React.useState("");
-  const [users, setUsers] = React.useState([]);
+  const [filterSwitch, setFilterSwitch] = React.useState(false);
+  const users = [
+    { name: "Saif Imran" },
+    { name: "Jon Doe" },
+    { name: "Jane Doe" },
+  ];
 
   useEffect(() => {
-    setTasks([
-      {
-        label: "Label A",
-        description: "A lot of long description",
-        status: "To Do",
-        user: "Saif Imran",
-      },
-    ]);
-    setUsers([
-      { name: "Saif Imran" },
-      { name: "Jon Doe" },
-      { name: "Jane Doe" },
-    ]);
-  }, []);
+    setTasks(tasks);
+  }, [tasks]);
 
   const handleAddNewTask = (task) => {
     console.log(task);
     setTasks((oldArray) => [...oldArray, task]);
-  };
-
-  const handleRequestSort = (event, property) => {
-    const isAsc = orderBy === property && order === "asc";
-    setOrder(isAsc ? "desc" : "asc");
-    setOrderBy(property);
-  };
-
-  const handleSelectAllClick = (event) => {
-    if (event.target.checked) {
-      const newSelecteds = tasks.map((n) => n.name);
-      setSelected(newSelecteds);
-      return;
-    }
-    setSelected([]);
   };
 
   const handleChangePage = (event, newPage) => {
@@ -116,8 +64,6 @@ export default function TableMain() {
     setDense(event.target.checked);
   };
 
-  const isSelected = (name) => selected.indexOf(name) !== -1;
-
   const handleFilter = (status) => {
     if (status !== "") {
       var newList = tasks.filter((task) => {
@@ -125,14 +71,14 @@ export default function TableMain() {
       });
       console.log("asd" + status, newList);
       setFilteredTasks(newList);
+      setFilterSwitch(true);
     } else {
       //remove filter
       setFilteredTasks("");
+      setFilterSwitch(false);
       console.log();
     }
   };
-
-  useEffect(() => {}, []);
 
   function handleChangeUser(key, event) {
     let oldArr = tasks;
@@ -146,7 +92,7 @@ export default function TableMain() {
     setTasks(oldArr);
   }
   function handleDeleteTask(key) {
-    console.log(key);
+    setTasks(tasks.slice(0, key).concat(tasks.slice(key + 1, tasks.length)));
   }
 
   const emptyRows =
@@ -160,6 +106,7 @@ export default function TableMain() {
           users={users}
           addNew={handleAddNewTask}
           handleFilter={handleFilter}
+          filterSwitch={filterSwitch}
         />
         <TableContainer>
           <Table
@@ -168,22 +115,11 @@ export default function TableMain() {
             size={dense ? "small" : "medium"}
             aria-label="enhanced table"
           >
-            <EnhancedTableHead
-              classes={classes}
-              numSelected={selected.length}
-              order={order}
-              orderBy={orderBy}
-              onSelectAllClick={handleSelectAllClick}
-              onRequestSort={handleRequestSort}
-              rowCount={tasks.length}
-            />
+            <EnhancedTableHead classes={classes} rowCount={tasks.length} />
             <TableBody>
-              {stableSort(filteredTasks || tasks, getComparator(order, orderBy))
+              {(filteredTasks || tasks)
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row, index) => {
-                  const isItemSelected = isSelected(row.name);
-                  const labelId = `enhanced-table-checkbox-${index}`;
-
                   return (
                     <TableRowCustom
                       users={users}

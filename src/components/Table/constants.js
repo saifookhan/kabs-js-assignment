@@ -8,11 +8,11 @@ const statuses = [
 ];
 
 const possibleStates = {
-  "To Do": ["In Progress"],
-  "In Progress": ["In QA", "Blocked"],
-  Blocked: ["To Do"],
-  "In QA": ["To Do", "Done"],
-  Done: ["Deployed"],
+  "To Do": ["To Do", "In Progress"],
+  "In Progress": ["In Progress", "In QA", "Blocked"],
+  Blocked: ["Blocked", "To Do"],
+  "In QA": ["In QA", "To Do", "Done"],
+  Done: ["Done", "Deployed"],
   Deployed: [""],
   "": ["Deployed"],
 };

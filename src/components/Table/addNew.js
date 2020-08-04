@@ -28,6 +28,9 @@ export default function AddNew(props) {
 
   const handleClose = () => {
     setOpen(false);
+    setAssignedTo("");
+    setNewDesc("");
+    setNewLabel("");
   };
   const handleSave = () => {
     props.addNew({
@@ -37,6 +40,8 @@ export default function AddNew(props) {
       user: assignedTo,
     });
     setAssignedTo("");
+    setNewDesc("");
+    setNewLabel("");
     setOpen(false);
   };
 
@@ -66,6 +71,7 @@ export default function AddNew(props) {
             label="Label"
             type="text"
             fullWidth
+            required
             onChange={(e) => {
               setNewLabel(e.target.value);
             }}
@@ -75,6 +81,7 @@ export default function AddNew(props) {
             margin="dense"
             id="name"
             multiline
+            required
             rows={4}
             label="Description"
             type="text"
@@ -105,7 +112,11 @@ export default function AddNew(props) {
           <Button onClick={handleClose} color="primary">
             Cancel
           </Button>
-          <Button onClick={handleSave} color="primary">
+          <Button
+            onClick={handleSave}
+            color="primary"
+            disabled={newlabel === "" && newDesc === ""}
+          >
             Submit
           </Button>
         </DialogActions>

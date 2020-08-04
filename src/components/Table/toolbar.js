@@ -8,9 +8,6 @@ import IconButton from "@material-ui/core/IconButton";
 import Tooltip from "@material-ui/core/Tooltip";
 import DeleteIcon from "@material-ui/icons/Delete";
 import FilterListIcon from "@material-ui/icons/FilterList";
-import Menu from "@material-ui/core/Menu";
-
-import Button from "@material-ui/core/Button";
 import ClickAwayListener from "@material-ui/core/ClickAwayListener";
 import Grow from "@material-ui/core/Grow";
 import Paper from "@material-ui/core/Paper";
@@ -23,7 +20,7 @@ import { statuses } from "./constants";
 
 const EnhancedTableToolbar = (props) => {
   const classes = useToolbarStyles();
-  const { filteredTasks } = props;
+  const { filteredTasks, filterSwitch } = props;
 
   const [open, setOpen] = React.useState(false);
   const anchorRef = React.useRef(null);
@@ -42,10 +39,10 @@ const EnhancedTableToolbar = (props) => {
   return (
     <Toolbar
       className={clsx(classes.root, {
-        [classes.highlight]: filteredTasks > 0,
+        [classes.highlight]: filterSwitch,
       })}
     >
-      {filteredTasks > 0 ? (
+      {filterSwitch ? (
         <Typography
           className={classes.title}
           color="inherit"
@@ -65,7 +62,7 @@ const EnhancedTableToolbar = (props) => {
         </Typography>
       )}
 
-      {filteredTasks > 0 ? (
+      {filterSwitch ? (
         <Tooltip title="Delete">
           <IconButton
             aria-label="delete"
@@ -101,7 +98,6 @@ const EnhancedTableToolbar = (props) => {
                 {...TransitionProps}
                 style={{
                   transformOrigin: "center top",
-                  // placement === "bottom" ? "center top" : "center bottom",
                 }}
               >
                 <Paper>
