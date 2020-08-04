@@ -47,7 +47,7 @@ export default function TableMain() {
   }, [tasks]);
 
   const handleAddNewTask = (task) => {
-    console.log(task);
+    // console.log(task);
     setTasks((oldArray) => [...oldArray, task]);
   };
 
@@ -69,14 +69,13 @@ export default function TableMain() {
       var newList = tasks.filter((task) => {
         return task.status === status;
       });
-      console.log("asd" + status, newList);
+      // console.log("asd" + status, newList);
       setFilteredTasks(newList);
       setFilterSwitch(true);
     } else {
       //remove filter
       setFilteredTasks("");
       setFilterSwitch(false);
-      console.log();
     }
   };
 
